@@ -31,10 +31,17 @@ import org.apache.olingo.server.api.uri.UriResource;
 import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 import org.springframework.stereotype.Component;
 
-@Component
+import com.pengdaijun.odata.olingo.data.Storage;
+
+//@Component
 public class PDJEntityCollectionProcessor implements EntityCollectionProcessor {
 	private OData odata;
 	private ServiceMetadata serviceMetadata;
+	private Storage storage;
+
+	public PDJEntityCollectionProcessor(Storage storage) {
+		this.storage = storage;
+	}
 
 	// This method is invoked by the Olingo library, allowing us to store the
 	// context object
@@ -58,7 +65,8 @@ public class PDJEntityCollectionProcessor implements EntityCollectionProcessor {
 
 		// 2nd: fetch the data from backend for this requested EntitySetName
 		// it has to be delivered as EntitySet object
-		EntityCollection entitySet = getData(edmEntitySet);
+//		EntityCollection entitySet = getData(edmEntitySet);
+		EntityCollection entitySet = storage.readEntitySetData(edmEntitySet);
 
 		// 3rd: create a serializer based on the requested format (json)
 		ODataSerializer serializer = odata.createSerializer(responseFormat);
@@ -83,7 +91,8 @@ public class PDJEntityCollectionProcessor implements EntityCollectionProcessor {
 
 	}
 
-	private EntityCollection getData(EdmEntitySet edmEntitySet) {
+	@Deprecated
+	private EntityCollection getData_Deprecated(EdmEntitySet edmEntitySet) {
 
 		EntityCollection productsCollection = new EntityCollection();
 		// check for which EdmEntitySet the data is requested
